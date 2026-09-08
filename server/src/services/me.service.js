@@ -1,6 +1,7 @@
 import { ApiError } from '../exceptions/api.error.js';
 import { User } from '../models/user.js';
 import bcrypt from 'bcrypt';
+// eslint-disable-next-line no-shadow
 import crypto from 'node:crypto';
 import { emailService } from './email.service.js';
 

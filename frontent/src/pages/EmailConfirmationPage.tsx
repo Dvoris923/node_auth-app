@@ -28,11 +28,13 @@ export const EmailConfirmationPage = () => {
         setIsLoading(false);
         try {
           await logout();
-        } catch {
-        }
+        } catch (error) {
+          error
+        } 
       })
       .catch((err) => {
         setErrorMessage(
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
           err.response?.data?.message || 'Помилка підтвердження пошти або токен застарів.'
         );
         setIsLoading(false);

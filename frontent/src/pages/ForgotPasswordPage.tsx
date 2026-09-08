@@ -19,6 +19,7 @@ export const ForgotPasswordPage = () => {
         setIsSubmitted(true);
       })
       .catch((err) => {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
         setError(err.response?.data?.message || 'Щось пішло не так. Спробуйте пізніше.');
       })
       .finally(() => {

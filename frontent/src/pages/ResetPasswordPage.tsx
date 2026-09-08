@@ -38,6 +38,7 @@ export const ResetPasswordPage = () => {
         setIsSuccess(true);
       })
       .catch((err) => {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
         setError(err.response?.data?.message || 'Недійсне або застаріле посилання');
       })
       .finally(() => {

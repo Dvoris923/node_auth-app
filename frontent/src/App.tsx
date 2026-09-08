@@ -28,6 +28,7 @@ export function App() {
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     checkAuth();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (!isChecked) {

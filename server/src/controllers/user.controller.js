@@ -120,7 +120,7 @@ const confirmPasswordReset = async (req, res) => {
   const { token, password } = req.body;
 
   if (!token || !password) {
-    throw ApiError.badRequest('Токен та новий пароль є обов\'язковими');
+    throw ApiError.badRequest("Токен та новий пароль є обов'язковими");
   }
 
   await meService.resetPassword(token, password);
