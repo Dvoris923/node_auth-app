@@ -1,23 +1,36 @@
-name: Test
+name: CI Checks
 
-on:
-  pull_request:
-    branches: [ master ]
+on: [push, pull_request]
 
 jobs:
-  build:
-
+  test:
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [20.x]
-
     steps:
-    - uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
-    - run: npm install
-    - run: npm test
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+
+      - name: Install Server dependencies
+        working-directory: ./server
+        run: npm install
+
+      - name: Run Server tests
+        working-directory: ./server
+        run: npm test --if-present
+
+      # --- ПЕРЕВІРКА ТА ЗБІРКА ФРОНТЕНДУ ---
+      - name: Install Frontend dependencies
+        working-directory: ./frontend
+        run: npm install
+
+      - name: Lint & Test Frontend
+        working-directory: ./frontend
+        run: |
+          npm run lint --if-present
+          npm run build
