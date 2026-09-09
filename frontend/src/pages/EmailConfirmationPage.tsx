@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { meService } from '../services/meService';
 import { Loader } from '../components/Loader';
 import { useAuth } from '../components/AuthContext';
+import { AxiosError } from 'axios';
 
 export const EmailConfirmationPage = () => {
   const { emailToken } = useParams<{ emailToken: string }>();
@@ -16,7 +17,7 @@ export const EmailConfirmationPage = () => {
 
   useEffect(() => {
     if (!emailToken) {
-      setErrorMessage('Токен підтвердження відсутній.');
+      setErrorMessage('Confirmation token is missing.');
       setIsLoading(false);
       return;
     }
@@ -32,11 +33,11 @@ export const EmailConfirmationPage = () => {
           error
         } 
       })
-      .catch((err) => {
-        setErrorMessage(
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
-          err.response?.data?.message || 'Помилка підтвердження пошти або токен застарів.'
-        );
+      .catch((err: AxiosError<{ message?: string }>) => {
+        const message =
+          err.response?.data?.message ??
+          'Email verification error or the token has expired.';
+        setErrorMessage(message);
         setIsLoading(false);
       });
   }, [emailToken, logout]);
@@ -74,23 +75,23 @@ export const EmailConfirmationPage = () => {
       <div className="box has-text-centered">
         {isSuccess ? (
           <>
-            <h1 className="title has-text-success">Пошту успішно змінено!</h1>
+            <h1 className="title has-text-success">Email successfully changed!</h1>
             <p className="notification is-success is-light">
-              Вашу електронну пошту оновлено. Будь ласка, увійдіть з новим Email.
+             Your email address has been updated. Please log in with the new email.
             </p>
             <p className="is-size-6 mb-4">
-              Автоматичний перехід на сторінку входу через <strong>{countdown}</strong> сек...
+              Automatic redirect to the login page in <strong>{countdown}</strong> sec...
             </p>
             <button onClick={() => void handleManualLogin()} className="button is-success">
-  Увійти зараз
+  Log in now
 </button>
           </>
         ) : (
           <>
-            <h1 className="title has-text-danger">Помилка підтвердження</h1>
+            <h1 className="title has-text-danger">Confirmation error</h1>
             <p className="notification is-danger is-light">{errorMessage}</p>
             <button onClick={() => navigate('/profile')} className="button is-link">
-              Повернутися до профілю
+             Return to profile
             </button>
           </>
         )}

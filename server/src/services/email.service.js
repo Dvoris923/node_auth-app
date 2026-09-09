@@ -31,36 +31,36 @@ function sendActivationEmail(email, token) {
 function sendEmailConfirmation(email, token) {
   const href = `${process.env.CLIENT_HOST}/confirm-email/${token}`;
   const html = `
-    <h1>Підтвердження зміни Email</h1>
-    <p>Ви запросили зміну електронної пошти. Натисніть посилання нижче для підтвердження:</p>
-    <a href="${href}">Підтвердити нову пошту</a>
-    <p><small>Якщо ви цього не замовляли, просто проігноруйте цей лист.</small></p>
+    <h1>Email change confirmation</h1>
+    <p>You have requested an email address change. Click the link below to confirm:</p>
+    <a href="${href}">Confirm new email</a>
+    <p><small>If you did not order this, simply ignore this email..</small></p>
   `;
 
-  return sendEmail(email, 'Підтвердження зміни електронної пошти', html);
+  return sendEmail(email, 'Email change confirmation', html);
 }
 
 function sendEmailChangeNotification(email, newEmail) {
   const html = `
-    <h1>Запит на зміну Email</h1>
-    <p>На вашому акаунті було створено запит на зміну адреси на <strong>${newEmail}</strong>.</p>
-    <p style="color: red;">Якщо ви цього НЕ робили, негайно змініть свій пароль та зверніться до підтримки.</p>
+    <h1>Request to change email</h1>
+    <p>A change of address request has been created on your account.<strong>${newEmail}</strong>.</p>
+    <p style="color: red;">If you did NOT do this, change your password immediately and contact support..</p>
   `;
 
-  return sendEmail(email, 'Сповіщення про безпеку: зміна Email', html);
+  return sendEmail(email, 'Security notification: Email change', html);
 }
 
 function sendPasswordResetEmail(email, token) {
   const href = `${process.env.CLIENT_HOST}/reset-password/${token}`;
 
   const html = `
-    <h1>Скидання пароля</h1>
-    <p>Ви запросили скидання пароля для вашого акаунта. Натисніть посилання нижче, щоб встановити новий пароль:</p>
-    <a href="${href}">Встановити новий пароль</a>
-    <p><small>Якщо ви цього не замовляли, просто проігноруйте цей лист. Ваш пароль залишиться незмінним.</small></p>
+    <h1>Password reset</h1>
+    <p>You have requested a password reset for your account. Click the link below to set a new password:</p>
+    <a href="${href}">Set a new password</a>
+    <p><small>If you did not request this, simply ignore this email. Your password will remain unchanged..</small></p>
   `;
 
-  return sendEmail(email, 'Скидання пароля', html);
+  return sendEmail(email, 'Password reset', html);
 }
 
 export const emailService = {

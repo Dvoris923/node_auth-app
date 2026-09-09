@@ -3,21 +3,8 @@ import { Formik, Form, Field } from 'formik';
 import cn from 'classnames';
 import { useAuth } from '../components/AuthContext';
 import { meService } from '../services/meService';
-
-function validateName(value: string) {
-  if (!value.trim()) return "Name is required";
-  if (value.trim().length < 3) return 'Minimum of 3 characters';
-}
-
-function validateEmail(value: string) {
-  if (!value) return "Email is required.";
-  if (!/\S+@\S+\.\S+/.test(value)) return 'Invalid email';
-}
-
-function validatePassword(value: string) {
-  if (!value) return "Password is required.";
-  if (value.length < 6) return 'The password must be at least 6 characters long.';
-}
+import { AxiosError } from 'axios';
+import { validateEmail, validatePassword, validateName } from '../utils/validators';
 
 export const ProfilePage = () => {
   const { currentUser } = useAuth();
@@ -55,7 +42,7 @@ export const ProfilePage = () => {
               <div style={{ borderLeft: '1px solid #dbdbdb', height: '100%' }}></div>
             </div>
 
-            {/* 1. Зміна імені */}
+            {/* 1. Name Change */}
             <div className="column is-5">
               <h2 className="subtitle is-5 mb-3">Change name</h2>
 
@@ -81,12 +68,11 @@ export const ProfilePage = () => {
                         success: "Name successfully updated!",
                       });
                     })
-                    .catch((err) => {
-                      setNameStatus({
-                        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-                        error: err.response?.data?.message || "Error updating name",
-                      });
-                    })
+                    .catch((err: AxiosError<{ message?: string }>) => {
+  setNameStatus({
+    error: err.response?.data?.message ?? "Error updating name",
+  });
+})
                     .finally(() => {
                       formikHelpers.setSubmitting(false);
                     });
@@ -124,7 +110,7 @@ export const ProfilePage = () => {
           </div>
         </div>
 
-        {/* 2. Зміна пароля */}
+        {/* 2. Change password */}
         <div className="box mb-5">
           <h2 className="title is-5 mb-4">Change password</h2>
 
@@ -153,11 +139,14 @@ export const ProfilePage = () => {
               meService
                 .changePassword(values.oldPassword, values.newPassword)
                 .then(() => {
-                  setPasswordStatus({ success: 'Пароль успішно змінено!' });
+                  setPasswordStatus({ success: 'Password successfully changed!' });
                   resetForm();
                 })
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-                .catch((err) => setPasswordStatus({ error: err.response?.data?.message || 'Failed to change the password' }))
+                .catch((err: AxiosError<{ message?: string }>) => 
+  setPasswordStatus({ 
+    error: err.response?.data?.message ?? 'Failed to change the password' 
+  })
+)
                 .finally(() => setSubmitting(false));
             }}
           >
@@ -255,8 +244,11 @@ export const ProfilePage = () => {
                   });
                   resetForm();
                 })
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-                .catch((err) => setEmailStatus({ error: err.response?.data?.message || 'Failed to initiate the email change.' }))
+                .catch((err: AxiosError<{ message?: string }>) =>
+  setEmailStatus({
+    error: err.response?.data?.message ?? 'Failed to initiate the email change.',
+  })
+)
                 .finally(() => setSubmitting(false));
             }}
           >

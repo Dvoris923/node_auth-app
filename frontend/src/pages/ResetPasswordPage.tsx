@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { authService } from '../services/authService';
+import { AxiosError } from 'axios';
 
 export const ResetPasswordPage = () => {
   const { resetToken } = useParams<{ resetToken: string }>();
@@ -37,10 +38,9 @@ export const ResetPasswordPage = () => {
       .then(() => {
         setIsSuccess(true);
       })
-      .catch((err) => {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
-        setError(err.response?.data?.message || 'Invalid or outdated link');
-      })
+      .catch((err: AxiosError<{ message?: string }>) => {
+  setError(err.response?.data?.message ?? 'Invalid or outdated link');
+})
       .finally(() => {
         setIsLoading(false);
       });

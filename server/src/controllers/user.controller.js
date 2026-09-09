@@ -64,7 +64,7 @@ const changePassword = async (req, res) => {
   const normalizedUser = userService.normalize(user);
 
   res.send({
-    message: 'Пароль успішно змінено',
+    message: 'Password successfully changed.',
     user: normalizedUser,
   });
 };

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { authService } from '../services/authService';
+import { AxiosError } from 'axios';
 
 export const ForgotPasswordPage = () => {
   const [email, setEmail] = useState('');
@@ -18,16 +19,14 @@ export const ForgotPasswordPage = () => {
       .then(() => {
         setIsSubmitted(true);
       })
-      .catch((err) => {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
-        setError(err.response?.data?.message || 'Something went wrong. Please try again later.');
-      })
+      .catch((err: AxiosError<{ message?: string }>) => {
+  setError(err.response?.data?.message ?? 'Something went wrong. Please try again later.');
+})
       .finally(() => {
         setIsLoading(false);
       });
   };
 
-  // Якщо лист успішно "надіслано", показуємо інформаційне повідомлення
   if (isSubmitted) {
     return (
       <div className="container tab-content">

@@ -8,7 +8,7 @@
 
 * **Backend:** Node.js, Express, Sequelize ORM, PostgreSQL, JWT (Access & Refresh tokens), bcrypt, Nodemailer.
 * **Frontend:** React, HTML5, CSS3, Axios / Fetch API.
-* **Архітектура:** Monorepo (`backend/` та `frontend/`).
+* **Архітектура:** Monorepo (`server/` та `frontend/`).
 
 ---
 
@@ -27,7 +27,7 @@
 Переконайтеся, що у вас встановлені:
 * **Node.js** (версія 18+)
 * **PostgreSQL** (запущена база даних)
-* **npm** або **yarn**
+* **npm** 
 
 ---
 
@@ -39,15 +39,15 @@
 git clone [https://github.com/Dvoris923/node_auth-app.git](https://github.com/Dvoris923/node_auth-app.git)
 cd node_auth-app
 
-!!!Налаштування!!! та запуск Backend
+!!!Налаштування!!! та запуск Server
 
 1 Перейдіть у папку бекенду та встановіть залежності:
 
-cd backend
+cd server
 
 npm install
 
-2 Створіть файл .env у папці backend/:
+2 Створіть файл .env у папці server/:
 
 PORT=3005
 CLIENT_HOST=http://localhost:3000

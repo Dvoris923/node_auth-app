@@ -72,7 +72,6 @@ const activate = async (req, res) => {
     new Date() > user.activationTokenExpiresAt
   ) {
     throw ApiError.badRequest(
-      // eslint-disable-next-line max-len
       'The activation token has expired. Please register again or submit a new request.',
     );
   }

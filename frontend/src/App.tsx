@@ -26,10 +26,14 @@ export function App() {
   const { isChecked, currentUser, logout, checkAuth } = useAuth();
 
   useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    checkAuth();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const initAuth = async () => {
+    await checkAuth();
+  };
+
+  void initAuth();
+  
+}, [checkAuth]);
+
 
   if (!isChecked) {
     return <Loader />;

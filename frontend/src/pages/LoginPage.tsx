@@ -6,17 +6,7 @@ import { usePageError } from '../hooks/usePageError';
 import { useAuth } from '../components/AuthContext';
 import { AxiosError } from 'axios';
 
-const EMAIL_PATTERN = /^[\w.+-]+@([\w-]+\.){1,3}[\w-]{2,}$/;
-
-function validateEmail(value: string) {
-  if (!value) return 'Email is required';
-  if (!EMAIL_PATTERN.test(value)) return 'Email is not valid';
-}
-
-function validatePassword(value: string) {
-  if (!value) return 'Password is required';
-  if (value.length < 6) return 'At least 6 characters';
-}
+import { validateEmail, validatePassword } from '../utils/validators';
 
 export const LoginPage = () => {
   const navigate = useNavigate();
@@ -41,8 +31,10 @@ export const LoginPage = () => {
         onSubmit={({ email, password }) => {
           return login(email, password)
             .then(() => {
-              const state = location.state as { from?: Location };
-              navigate(state.from?.pathname ?? '/');
+              const state = location.state as { from?: Location } | null;
+              const redirectPath = state?.from?.pathname ?? '/';
+
+              navigate(redirectPath);
             })
             .catch((error: AxiosError<{ message?: string }>) => {
               setError(error.response?.data?.message ?? '');

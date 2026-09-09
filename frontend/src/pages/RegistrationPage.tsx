@@ -7,28 +7,12 @@ import { authService } from '../services/authService';
 import { AxiosError } from 'axios';
 import { usePageError } from '../hooks/usePageError';
 import { useAuth } from '../components/AuthContext';
+import { validateEmail, validatePassword, validateName } from '../utils/validators';
 
 type RegistrationError = AxiosError<{
   errors?: { email?: string; password?: string; name?: string };
   message: string;
 }>;
-
-function validateEmail(value: string) {
-  const EMAIL_PATTERN = /^[\w.+-]+@([\w-]+\.){1,3}[\w-]{2,}$/;
-
-  if (!value) return 'Email is required';
-  if (!EMAIL_PATTERN.test(value)) return 'Email is not valid';
-}
-
-const validatePassword = (value: string) => {
-  if (!value) return 'Password is required';
-  if (value.length < 6) return 'At least 6 characters';
-};
-
-function validateName(value: string) {
-  if (!value) return 'Name is required';
-  if (value.length < 3) return 'At least 3 characters';
-}
 
 export const RegistrationPage = () => {
   const [error, setError] = usePageError('');
