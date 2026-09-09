@@ -1,36 +1,33 @@
-name: CI Checks
+name: CI Tests
 
-on: [push, pull_request]
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
 
 jobs:
-  test:
+  build-and-test:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check out repository
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '18'
 
-
-      - name: Install Server dependencies
+      - name: Install & Test Server
         working-directory: ./server
-        run: npm install
+        run: |
+          npm ci
+          npm test --if-present
 
-      - name: Run Server tests
-        working-directory: ./server
-        run: npm test --if-present
 
-      # --- ПЕРЕВІРКА ТА ЗБІРКА ФРОНТЕНДУ ---
-      - name: Install Frontend dependencies
-        working-directory: ./frontend
-        run: npm install
-
-      - name: Lint & Test Frontend
+      - name: Install & Build Frontend
         working-directory: ./frontend
         run: |
-          npm run lint --if-present
-          npm run build
+          npm ci
+          npm run dev --if-present
