@@ -15,17 +15,17 @@ export const ResetPasswordPage = () => {
     e.preventDefault();
 
     if (password.length < 6) {
-      setError('Пароль має містити як мінімум 6 символів');
+      setError('The password must contain at least 6 characters.');
       return;
     }
 
     if (password !== confirmPassword) {
-      setError('Паролі не збігаються');
+      setError('Passwords do not match');
       return;
     }
 
     if (!resetToken) {
-      setError('Токен скидання відсутній');
+      setError('Reset token is missing.');
       return;
     }
 
@@ -39,7 +39,7 @@ export const ResetPasswordPage = () => {
       })
       .catch((err) => {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
-        setError(err.response?.data?.message || 'Недійсне або застаріле посилання');
+        setError(err.response?.data?.message || 'Invalid or outdated link');
       })
       .finally(() => {
         setIsLoading(false);
@@ -50,12 +50,12 @@ export const ResetPasswordPage = () => {
     return (
       <div className="container tab-content">
         <div className="box has-text-centered">
-          <h1 className="title has-text-success">Пароль успішно змінено!</h1>
+          <h1 className="title has-text-success">Password successfully changed!</h1>
           <p className="notification is-success is-light mb-4">
-            Тепер ви можете увійти до системи з новим паролем.
+           You can now log in to the system with your new password.
           </p>
           <Link to="/login" className="button is-success">
-            Увійти в акаунт
+           Log in to your account
           </Link>
         </div>
       </div>
@@ -65,10 +65,10 @@ export const ResetPasswordPage = () => {
   return (
     <div className="container tab-content">
       <form onSubmit={handleSubmit} className="box">
-        <h1 className="title">Новий пароль</h1>
+        <h1 className="title">New password</h1>
 
         <div className="field">
-          <label className="label">Новий пароль</label>
+          <label className="label">New password</label>
           <div className="control">
             <input
               type="password"
@@ -82,7 +82,7 @@ export const ResetPasswordPage = () => {
         </div>
 
         <div className="field">
-          <label className="label">Підтвердження пароля</label>
+          <label className="label">Confirm password</label>
           <div className="control">
             <input
               type="password"
@@ -101,7 +101,7 @@ export const ResetPasswordPage = () => {
           type="submit"
           className={`button is-primary ${isLoading ? 'is-loading' : ''}`}
         >
-          Зберегти новий пароль
+          Save new password
         </button>
       </form>
     </div>

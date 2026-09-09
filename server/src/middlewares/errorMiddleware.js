@@ -1,6 +1,6 @@
 import { ApiError } from '../exceptions/api.error.js';
 
-export const errorMiddeleware = (error, req, res, next) => {
+export const errorMiddleware = (error, req, res, next) => {
   if (error instanceof ApiError) {
     return res.status(error.status).send({
       message: error.message,

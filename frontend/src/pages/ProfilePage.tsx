@@ -4,24 +4,23 @@ import cn from 'classnames';
 import { useAuth } from '../components/AuthContext';
 import { meService } from '../services/meService';
 
-// Валідатори
 function validateName(value: string) {
-  if (!value.trim()) return "Ім'я обов'язкове";
-  if (value.trim().length < 3) return 'Мінімум 3 символи';
+  if (!value.trim()) return "Name is required";
+  if (value.trim().length < 3) return 'Minimum of 3 characters';
 }
 
 function validateEmail(value: string) {
-  if (!value) return "Email обов'язковий";
-  if (!/\S+@\S+\.\S+/.test(value)) return 'Некоректний Email';
+  if (!value) return "Email is required.";
+  if (!/\S+@\S+\.\S+/.test(value)) return 'Invalid email';
 }
 
 function validatePassword(value: string) {
-  if (!value) return "Пароль обов'язковий";
-  if (value.length < 6) return 'Пароль має бути від 6 символів';
+  if (!value) return "Password is required.";
+  if (value.length < 6) return 'The password must be at least 6 characters long.';
 }
 
 export const ProfilePage = () => {
-  const { currentUser, setCurrentUser } = useAuth();
+  const { currentUser } = useAuth();
 
   // Повідомлення для кожного блоку
   const [nameStatus, setNameStatus] = useState<{ success?: string; error?: string }>({});
@@ -29,25 +28,25 @@ export const ProfilePage = () => {
   const [emailStatus, setEmailStatus] = useState<{ success?: string; error?: string }>({});
 
   if (!currentUser) {
-    return <p className="section">Завантаження профілю...</p>;
+    return <p className="section">Loading profile...</p>;
   }
 
   return (
     <div className="section">
       <div className="container" style={{ maxWidth: '900px' }}>
-        <h1 className="title mb-5">Особистий кабінет</h1>
+        <h1 className="title mb-5">Personal Account</h1>
 
         <div className="box mb-5">
           <div className="columns is-vcentered">
             {/* Поточні дані */}
             <div className="column is-6">
               <div className="mb-4">
-                <p className="heading">Поточне ім'я</p>
+                <p className="heading">Current name</p>
                 <p className="title is-4 mb-0">{currentUser.name}</p>
               </div>
 
               <div>
-                <p className="heading">Електронна пошта</p>
+                <p className="heading">E-mail</p>
                 <p className="subtitle is-6">{currentUser.email}</p>
               </div>
             </div>
@@ -58,7 +57,7 @@ export const ProfilePage = () => {
 
             {/* 1. Зміна імені */}
             <div className="column is-5">
-              <h2 className="subtitle is-5 mb-3">Змінити ім'я</h2>
+              <h2 className="subtitle is-5 mb-3">Change name</h2>
 
               {nameStatus.success && (
                 <div className="notification is-success is-light p-2 mb-3">{nameStatus.success}</div>
@@ -76,19 +75,16 @@ export const ProfilePage = () => {
                   meService
                     .updateName(name.trim())
                     .then((updatedUser) => {
-                      if (setCurrentUser) {
-                        setCurrentUser(updatedUser);
-                      }
-
                       formikHelpers.resetForm({ values: { name: updatedUser.name } });
 
                       setNameStatus({
-                        success: "Ім'я успішно оновлено!",
+                        success: "Name successfully updated!",
                       });
                     })
                     .catch((err) => {
                       setNameStatus({
-                        error: err.response?.data?.message || "Помилка оновлення імені",
+                        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+                        error: err.response?.data?.message || "Error updating name",
                       });
                     })
                     .finally(() => {
@@ -99,7 +95,7 @@ export const ProfilePage = () => {
                 {({ touched, errors, isSubmitting, values }) => (
                   <Form>
                     <div className="field">
-                      <label className="label is-small">Нове ім'я</label>
+                      <label className="label is-small">New Name</label>
                       <div className="control has-icons-left">
                         <Field
                           validate={validateName}
@@ -119,7 +115,7 @@ export const ProfilePage = () => {
                       className={cn('button is-link is-fullwidth mt-3', { 'is-loading': isSubmitting })}
                       disabled={isSubmitting || !!errors.name || values.name.trim() === currentUser.name}
                     >
-                      Зберегти ім'я
+                      Save name
                     </button>
                   </Form>
                 )}
@@ -130,7 +126,7 @@ export const ProfilePage = () => {
 
         {/* 2. Зміна пароля */}
         <div className="box mb-5">
-          <h2 className="title is-5 mb-4">Зміна пароля</h2>
+          <h2 className="title is-5 mb-4">Change password</h2>
 
           {passwordStatus.success && (
             <div className="notification is-success is-light p-2 mb-3">{passwordStatus.success}</div>
@@ -160,7 +156,8 @@ export const ProfilePage = () => {
                   setPasswordStatus({ success: 'Пароль успішно змінено!' });
                   resetForm();
                 })
-                .catch((err) => setPasswordStatus({ error: err.response?.data?.message || 'Не вдалося змінити пароль' }))
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+                .catch((err) => setPasswordStatus({ error: err.response?.data?.message || 'Failed to change the password' }))
                 .finally(() => setSubmitting(false));
             }}
           >
@@ -169,7 +166,7 @@ export const ProfilePage = () => {
                 <div className="columns">
                   <div className="column is-4">
                     <div className="field">
-                      <label className="label is-small">Поточний пароль</label>
+                      <label className="label is-small">Current password</label>
                       <div className="control">
                         <Field
                           validate={validatePassword}
@@ -186,7 +183,7 @@ export const ProfilePage = () => {
 
                   <div className="column is-4">
                     <div className="field">
-                      <label className="label is-small">Новий пароль</label>
+                      <label className="label is-small">New password</label>
                       <div className="control">
                         <Field
                           validate={validatePassword}
@@ -203,7 +200,7 @@ export const ProfilePage = () => {
 
                   <div className="column is-4">
                     <div className="field">
-                      <label className="label is-small">Підтвердження нового пароля</label>
+                      <label className="label is-small">Confirm new password</label>
                       <div className="control">
                         <Field
                           name="passwordConfirmation"
@@ -225,18 +222,18 @@ export const ProfilePage = () => {
                   className={cn('button is-warning', { 'is-loading': isSubmitting })}
                   disabled={isSubmitting}
                 >
-                  Оновити пароль
+                  Update password
                 </button>
               </Form>
             )}
           </Formik>
         </div>
 
-        {/* 3. Зміна електронної адреси */}
+    
         <div className="box">
-          <h2 className="title is-5 mb-2">Зміна електронної пошти</h2>
+          <h2 className="title is-5 mb-2">Change email address</h2>
           <p className="is-size-7 has-text-grey mb-4">
-            Після відправки форми на нову адресу буде надіслано лист із посиланням для підтвердження, а на стару — сповіщення про факт зміни.
+           After the form is submitted, an email with a confirmation link will be sent to the new address, and a notification regarding the change will be sent to the old one.
           </p>
 
           {emailStatus.success && (
@@ -254,11 +251,12 @@ export const ProfilePage = () => {
                 .requestEmailChange(values.newEmail, values.password)
                 .then(() => {
                   setEmailStatus({
-                    success: 'На нову пошту надіслано лист із підтвердженням. Перевірте скриньку!',
+                    success: 'A confirmation email has been sent to the new email address. Check your inbox!',
                   });
                   resetForm();
                 })
-                .catch((err) => setEmailStatus({ error: err.response?.data?.message || 'Не вдалося ініціювати зміну пошти' }))
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+                .catch((err) => setEmailStatus({ error: err.response?.data?.message || 'Failed to initiate the email change.' }))
                 .finally(() => setSubmitting(false));
             }}
           >
@@ -267,7 +265,7 @@ export const ProfilePage = () => {
                 <div className="columns">
                   <div className="column is-6">
                     <div className="field">
-                      <label className="label is-small">Новий Email</label>
+                      <label className="label is-small">New Email</label>
                       <div className="control">
                         <Field
                           validate={validateEmail}
@@ -283,7 +281,7 @@ export const ProfilePage = () => {
 
                   <div className="column is-6">
                     <div className="field">
-                      <label className="label is-small">Поточний пароль (для підтвердження)</label>
+                      <label className="label is-small">Current password (for confirmation)</label>
                       <div className="control">
                         <Field
                           validate={validatePassword}
@@ -302,7 +300,7 @@ export const ProfilePage = () => {
                   className={cn('button is-danger', { 'is-loading': isSubmitting })}
                   disabled={isSubmitting}
                 >
-                  Запросити зміну Email
+                  Request an email change
                 </button>
               </Form>
             )}

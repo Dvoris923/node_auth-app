@@ -22,9 +22,9 @@ export class ApiError extends Error {
     });
   }
 
-  static notFount(errors) {
+  static notFound(errors) {
     return new ApiError({
-      message: 'not Fount',
+      message: 'not Found',
       errors,
       status: 404,
     });

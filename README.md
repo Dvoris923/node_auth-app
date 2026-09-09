@@ -50,24 +50,25 @@ npm install
 2 Створіть файл .env у папці backend/:
 
 PORT=3005
-CLIENT_URL=http://localhost:3000
+CLIENT_HOST=http://localhost:3000
 
 # PostgreSQL Database Configuration
 DB_HOST=localhost
 DB_PORT=5432
-DB_NAME=auth_db
+DB_DATABASE=auth_db
 DB_USER=postgres
 DB_PASSWORD=your_postgres_password
 
 # JWT Secrets
-JWT_ACCESS_SECRET=your_super_secret_access_key
-JWT_REFRESH_SECRET=your_super_secret_refresh_key
+JWT_KEY=your_super_secret_access_key
+JWT_REFRESH_KEY=your_super_secret_refresh_key
 
 # SMTP Email Configuration
 SMTP_HOST=smtp.gmail.com
 SMTP_PORT=587
 SMTP_USER=your_email@gmail.com
-SMTP_PASSWORD=your_app_password
+SMTP_PASS=your_app_password
+
 
 3 Запустіть сервер розробки:
 

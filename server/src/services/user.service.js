@@ -24,6 +24,7 @@ function findByEmail(email) {
 async function register(name, email, password) {
   const activationToken = uuidv4();
 
+  const activationTokenExpiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
   const existUser = await findByEmail(email);
 
   if (existUser) {
@@ -37,6 +38,7 @@ async function register(name, email, password) {
     email,
     password,
     activationToken,
+    activationTokenExpiresAt,
   });
 
   await emailService.sendActivationEmail(email, activationToken);
@@ -46,7 +48,7 @@ async function updateName(userId, name) {
   const user = await User.findByPk(userId);
 
   if (!user) {
-    throw ApiError.notFound('Користувача не знайдено');
+    throw ApiError.notFound('User not found');
   }
 
   user.name = name;

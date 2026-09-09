@@ -18,6 +18,9 @@ export const User = client.define('user', {
   activationToken: {
     type: DataTypes.STRING,
   },
+  activationTokenExpiresAt: {
+    type: DataTypes.DATE,
+  },
   pendingEmail: {
     type: DataTypes.STRING,
     allowNull: true,
@@ -26,8 +29,16 @@ export const User = client.define('user', {
     type: DataTypes.STRING,
     allowNull: true,
   },
+  emailTokenExpiresAt: {
+    type: DataTypes.DATE,
+    allowNull: true,
+  },
   resetToken: {
     type: DataTypes.STRING,
+    allowNull: true,
+  },
+  resetTokenExpiresAt: {
+    type: DataTypes.DATE,
     allowNull: true,
   },
 });

@@ -67,10 +67,35 @@ const activate = async (req, res) => {
     return;
   }
 
+  if (
+    user.activationTokenExpiresAt &&
+    new Date() > user.activationTokenExpiresAt
+  ) {
+    throw ApiError.badRequest(
+      // eslint-disable-next-line max-len
+      'The activation token has expired. Please register again or submit a new request.',
+    );
+  }
+
+  user.activationTokenExpiresAt = null;
   user.activationToken = null;
   await user.save();
 
-  res.send(user);
+  const {
+    accessToken,
+    refreshToken,
+    user: normalizedUser,
+  } = await tokenService.generateAndSaveTokens(user);
+
+  res.cookie('refreshToken', refreshToken, {
+    maxAge: 30 * 24 * 60 * 60 * 1000,
+    httpOnly: true,
+  });
+
+  res.send({
+    user: normalizedUser,
+    accessToken,
+  });
 };
 
 const login = async (req, res) => {
@@ -82,25 +107,31 @@ const login = async (req, res) => {
     throw ApiError.badRequest('No such user');
   }
 
+  if (user.activationToken) {
+    throw ApiError.badRequest(
+      'The account has not been activated. Please check your email.',
+    );
+  }
+
   const isPasswordValid = await bcrypt.compare(password, user.password);
 
   if (!isPasswordValid) {
     throw ApiError.badRequest('Wrong password');
   }
 
-  generateTokens(res, user);
+  await generateTokens(res, user);
 };
 
 async function generateTokens(res, user) {
-  const normalizedUser = userService.normalize(user);
-  const accessToken = jwtService.sign(normalizedUser);
-  const refreshToken = jwtService.signRefresh(normalizedUser);
-
-  await tokenService.save(normalizedUser.id, refreshToken);
+  const {
+    accessToken,
+    refreshToken,
+    user: normalizedUser,
+  } = await tokenService.generateAndSaveTokens(user);
 
   res.cookie('refreshToken', refreshToken, {
     maxAge: 30 * 24 * 60 * 60 * 1000,
-    HttpOnly: true,
+    httpOnly: true,
   });
 
   res.send({
@@ -125,7 +156,7 @@ const refresh = async (req, res) => {
     throw ApiError.unauthorized('User not found');
   }
 
-  generateTokens(res, user);
+  await generateTokens(res, user);
 };
 
 const logout = async (req, res) => {
@@ -147,4 +178,5 @@ export const authController = {
   login,
   refresh,
   logout,
+  generateTokens,
 };

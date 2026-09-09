@@ -20,7 +20,7 @@ export const ForgotPasswordPage = () => {
       })
       .catch((err) => {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
-        setError(err.response?.data?.message || 'Щось пішло не так. Спробуйте пізніше.');
+        setError(err.response?.data?.message || 'Something went wrong. Please try again later.');
       })
       .finally(() => {
         setIsLoading(false);
@@ -32,26 +32,26 @@ export const ForgotPasswordPage = () => {
     return (
       <div className="container tab-content">
         <div className="box has-text-centered">
-          <h1 className="title has-text-success">Лист надіслано!</h1>
+          <h1 className="title has-text-success">The letter has been sent!</h1>
           <p className="notification is-success is-light mb-4">
-            Якщо акаунт з поштою <strong>{email}</strong> існує, ми надіслали інструкції для скидання пароля.
+            If an account with the email <strong>{email}</strong> exists, we have sent instructions for resetting the password.
           </p>
           <Link to="/login" className="button is-link">
-            Повернутися до входу
+            Return to the entrance
           </Link>
         </div>
       </div>
     );
   }
 
-  // Основна форма введення Email
+
   return (
     <div className="container tab-content">
       <form onSubmit={handleSubmit} className="box">
-        <h1 className="title">Скидання пароля</h1>
+        <h1 className="title">Password reset</h1>
 
         <div className="field">
-          <label className="label">Ваш Email</label>
+          <label className="label">Your email</label>
           <div className="control">
             <input
               type="email"
@@ -70,7 +70,7 @@ export const ForgotPasswordPage = () => {
           type="submit"
           className={`button is-primary ${isLoading ? 'is-loading' : ''}`}
         >
-          Надіслати лист
+         Send an email
         </button>
       </form>
     </div>

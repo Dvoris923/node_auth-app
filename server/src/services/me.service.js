@@ -9,7 +9,7 @@ async function updateName(userId, name) {
   const user = await User.findByPk(userId);
 
   if (!user) {
-    throw ApiError.notFound('Користувача не знайдено');
+    throw ApiError.notFound('User not found');
   }
 
   user.name = name;
@@ -22,32 +22,34 @@ async function changePassword(userId, oldPassword, newPassword) {
   const user = await User.findByPk(userId);
 
   if (!user) {
-    throw ApiError.notFound('Користувача не знайдено');
+    throw ApiError.notFound('User not found');
   }
 
   const isValidPassword = await bcrypt.compare(oldPassword, user.password);
 
   if (!isValidPassword) {
-    throw ApiError.badRequest('Неправильний поточний пароль');
+    throw ApiError.badRequest('Incorrect current password');
   }
 
   const isSamePassword = await bcrypt.compare(newPassword, user.password);
 
   if (isSamePassword) {
-    throw ApiError.badRequest('Новий пароль має відрізнятися від старого');
+    throw ApiError.badRequest(
+      'The new password must be different from the old one.',
+    );
   }
 
   user.password = await bcrypt.hash(newPassword, 10);
   await user.save();
 
-  return { message: 'Пароль успішно змінено' };
+  return user;
 }
 
 async function requestEmailChange(userId, newEmail, password) {
   const user = await User.findByPk(userId);
 
   if (!user) {
-    throw ApiError.notFound('Користувача не знайдено');
+    throw ApiError.notFound('User not found');
   }
 
   const isPasswordValid = await bcrypt.compare(password, user.password);
@@ -68,6 +70,7 @@ async function requestEmailChange(userId, newEmail, password) {
 
   const emailToken = crypto.randomBytes(32).toString('hex');
 
+  user.emailTokenExpiresAt = new Date(Date.now() + 60 * 60 * 1000);
   user.pendingEmail = newEmail;
   user.emailToken = emailToken;
   await user.save();
@@ -83,9 +86,14 @@ async function confirmEmailChange(emailToken) {
     throw ApiError.badRequest('Invalid or expired activation link');
   }
 
+  if (user.emailTokenExpiresAt && new Date() > user.emailTokenExpiresAt) {
+    throw ApiError.badRequest('The email change link has expired.');
+  }
+
   user.email = user.pendingEmail;
   user.pendingEmail = null;
   user.emailToken = null;
+  user.emailTokenExpiresAt = null;
 
   await user.save();
 
@@ -102,6 +110,7 @@ async function requestPasswordReset(email) {
   const resetToken = crypto.randomBytes(32).toString('hex');
 
   user.resetToken = resetToken;
+  user.resetTokenExpiresAt = new Date(Date.now() + 60 * 60 * 1000);
 
   await user.save();
 
@@ -115,9 +124,14 @@ async function resetPassword(token, password) {
     throw ApiError.badRequest('Invalid or expired reset link');
   }
 
+  if (user.resetTokenExpiresAt && new Date() > user.resetTokenExpiresAt) {
+    throw ApiError.badRequest('The password reset link has expired.');
+  }
+
   user.password = await bcrypt.hash(password, 10);
 
   user.resetToken = null;
+  user.resetTokenExpiresAt = null;
 
   await user.save();
 }

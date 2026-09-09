@@ -1,6 +1,6 @@
 import { ApiError } from '../exceptions/api.error.js';
-import { jwtService } from '../services/jwt.service.js';
 import { meService } from '../services/me.service.js';
+import { tokenService } from '../services/token.service.js';
 import { userService } from '../services/user.service.js';
 
 function validateName(value) {
@@ -64,6 +64,7 @@ const changePassword = async (req, res) => {
   const normalizedUser = userService.normalize(user);
 
   res.send({
+    message: 'Пароль успішно змінено',
     user: normalizedUser,
   });
 };
@@ -75,7 +76,7 @@ const requestEmailChange = async (req, res) => {
   await meService.requestEmailChange(userId, newEmail, password);
 
   res.send({
-    message: 'Лист із підтвердженням надіслано на нову електронну пошту.',
+    message: 'A confirmation email has been sent to the new email address.',
   });
 };
 
@@ -83,21 +84,18 @@ const confirmEmailChange = async (req, res) => {
   const { token } = req.body;
 
   const updatedUser = await meService.confirmEmailChange(token);
-  const normalizedUser = userService.normalize(updatedUser);
 
-  const tokens = jwtService.generateTokens(normalizedUser);
+  const { accessToken, refreshToken, user } =
+    await tokenService.generateAndSaveTokens(updatedUser);
 
-  await userService.saveToken(updatedUser.id, tokens.refreshToken);
-
-  res.cookie('refreshToken', tokens.refreshToken, {
+  res.cookie('refreshToken', refreshToken, {
     maxAge: 30 * 24 * 60 * 60 * 1000,
     httpOnly: true,
   });
 
   res.send({
-    message: 'Електронну пошту успішно змінено!',
-    user: normalizedUser,
-    accessToken: tokens.accessToken,
+    user,
+    accessToken,
   });
 };
 
@@ -120,13 +118,13 @@ const confirmPasswordReset = async (req, res) => {
   const { token, password } = req.body;
 
   if (!token || !password) {
-    throw ApiError.badRequest("Токен та новий пароль є обов'язковими");
+    throw ApiError.badRequest('The token and the new password are required.');
   }
 
   await meService.resetPassword(token, password);
 
   res.send({
-    message: 'Пароль успішно змінено',
+    message: 'Password successfully changed.',
   });
 };
 

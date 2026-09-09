@@ -5,7 +5,7 @@ import express from 'express';
 import { authRouter } from './routes/auth.route.js';
 import cors from 'cors';
 import { userRouter } from './routes/user.route.js';
-import { errorMiddeleware } from './middelewares/errorMiddeleware.js';
+import { errorMiddleware } from './middlewares/errorMiddleware.js';
 import cookieParser from 'cookie-parser';
 
 const PORT = process.env.PORT || 3005;
@@ -28,6 +28,6 @@ app.get('/', (req, res) => {
   res.send('Hello');
 });
 
-app.use(errorMiddeleware);
+app.use(errorMiddleware);
 
 app.listen(PORT);

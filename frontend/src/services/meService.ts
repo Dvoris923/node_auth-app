@@ -1,4 +1,4 @@
-import { httpClient } from '../http/httpClient';
+import { httpClient } from '../http/httpClient.js';
 import { Me } from '../types/me.js';
 
 export const meService = {

@@ -1,6 +1,6 @@
 import { jwtService } from '../services/jwt.service.js';
 
-export const authMiddeleware = (req, res, next) => {
+export const authMiddleware = (req, res, next) => {
   const authorization = req.headers['authorization'] || '';
 
   const [, token] = authorization.split(' ');
