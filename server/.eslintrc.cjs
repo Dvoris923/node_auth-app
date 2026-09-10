@@ -1,22 +1,10 @@
 module.exports = {
-  extends: [
-    '@mate-academy/eslint-config',
-    'plugin:@typescript-eslint/recommended',
-  ],
-  parser: '@typescript-eslint/parser',
-  parserOptions: {
-    project: './tsconfig.json',
-    tsconfigRootDir: __dirname,
-  },
+  extends: '@mate-academy/eslint-config',
   env: {
     jest: true,
   },
-  plugins: [
-    'jest',
-    '@typescript-eslint',
-  ],
+  plugins: ['jest'],
   rules: {
     'no-proto': 0,
-    '@typescript-eslint/no-floating-promises': 'error',
   },
 };
