@@ -2,7 +2,6 @@
 import { ApiError } from '../exceptions/api.error.js';
 import { User } from '../models/user.js';
 import bcrypt from 'bcrypt';
-import crypto from 'node:crypto';
 import { emailService } from './email.service.js';
 
 async function updateName(userId, name) {

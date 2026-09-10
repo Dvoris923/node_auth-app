@@ -72,8 +72,9 @@ const activate = async (req, res) => {
     new Date() > user.activationTokenExpiresAt
   ) {
     throw ApiError.badRequest(
-      'The activation token has expired. Please register again or submit a new request.',
-    );
+  'The activation token has expired. ' +
+  'Please register again or submit a new request.'
+);
   }
 
   user.activationTokenExpiresAt = null;
