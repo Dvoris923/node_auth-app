@@ -25,7 +25,7 @@ export const AccountActivationPage = () => {
         setError(error.response?.data?.message ?? `Wrong activation link`);
       })
       .finally(() => setDone(true));
-  }, []);
+  }, [activate, activationToken, email]);
 
   if (!done) {
     return <Loader />;

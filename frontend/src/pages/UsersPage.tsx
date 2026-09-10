@@ -32,7 +32,7 @@ export const UsersPage = () => {
           },
         });
       });
-  }, []);
+  }, [location, logout, navigate, setError] );
 
   return (
     <div className="content">
